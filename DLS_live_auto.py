@@ -9,7 +9,7 @@ import win32api
 import win32con
 from ctypes import windll
 import win32process
-
+#l13
 # === Config ===
 IMAGE_FOLDER = 'imagesDLS'  # chứa START_LIVE.png, CONTINUE.png,...
 CONFIDENCE = 0.79
