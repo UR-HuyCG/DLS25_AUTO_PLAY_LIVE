@@ -15,7 +15,7 @@ IMAGE_FOLDER = 'imagesDLS'  # chứa START_LIVE.png, CONTINUE.png,...
 CONFIDENCE = 0.79
 CONFIDENCE_A_BUTTON = 0.5  # confidence cho A_BUTTON
 WAIT_TIME = 1.0
-OPTION_CLICK = 3  # 1: click A_BUTTON, 2: click ĐÚP vị trí ảo, 3: không click gì
+OPTION_CLICK = 2  # 1: click A_BUTTON, 2: click ĐÚP vị trí ảo, 3: không click gì
 pyautogui.FAILSAFE = False
 
 def get_ldplayer_hwnd():
@@ -132,7 +132,7 @@ def find_cv2(image_name, hwnd):
 
 import time
 
-def click_relative(hwnd, rel_x, rel_y): #clicl đúp
+def click_relative(hwnd, rel_x, rel_y): #click đúp
     if not is_ldplayer_foreground(hwnd):
         print(f"⛔ LDPlayer không phải foreground, bỏ qua click đúp")
         return
@@ -226,7 +226,7 @@ def auto_play_live():
                 time.sleep(2)
             if (OPTION_CLICK==2):
                 click_relative(hwnd, 0.5, 0.2)  # click vào CHÍNH GIỮA
-                time.sleep(1)
+                time.sleep(0.2)  # delay nhỏ giữa các lần click
             if (OPTION_CLICK==3):
                 pass
                 time.sleep(6)
