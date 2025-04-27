@@ -12,7 +12,7 @@ import win32process
 
 # === Config ===
 IMAGE_FOLDER = 'imagesDLS'  # chứa START_LIVE.png, CONTINUE.png,...
-CONFIDENCE = 0.79
+CONFIDENCE = 0.71
 CONFIDENCE_A_BUTTON = 0.5  # confidence cho A_BUTTON
 WAIT_TIME = 1.0
 OPTION_CLICK = 2  # 1: click A_BUTTON, 2: click ĐÚP vị trí ảo, 3: không click gì
@@ -101,7 +101,7 @@ def find_and_click_cv2(image_name, hwnd):
         center_x = left + max_loc[0] + template.shape[1] // 2
         center_y = top + max_loc[1] + template.shape[0] // 2
         pyautogui.click(center_x, center_y)
-        print(f"🖱️ Click {image_name} tại ({center_x}, {center_y})")
+        print(f"🖱️ Click {image_name} tại ({center_x}, {center_y}) (match: {max_val:.2f})")
         return True
     else:
         if is_ldplayer_foreground(hwnd):  # chỉ in lỗi nếu đang foreground
@@ -126,7 +126,7 @@ def find_cv2(image_name, hwnd):
 
     res = cv2.matchTemplate(screenshot, template, cv2.TM_CCOEFF_NORMED)
     _, max_val, _, _ = cv2.minMaxLoc(res)
-    print(f"🔍 So khớp {image_name} = {max_val:.2f}")
+    #print(f"🔍 So khớp {image_name} = {max_val:.2f}")
 
     return max_val >= CONFIDENCE
 
@@ -175,7 +175,7 @@ def auto_play_live():
 
         print("🚀 Đã click START LIVE")
         time.sleep(10)
-        print("🎮 Bắt đầu spam A_BUTTON trong lúc chờ trận đấu...")
+        print("🎮 Bắt đầu spam trong trận đấu...")
         if find_cv2("FAILED_TO_CONNECT.png", hwnd):
             print("❌ Không thể kết nối, thoát...")
             find_and_click_cv2("OK_FAILED_TO_CONNECT.png", hwnd)
@@ -198,17 +198,20 @@ def auto_play_live():
                 break
 
             if find_cv2("MATCH_END_EARLY.png", hwnd):
-                find_and_click_cv2("OK_MATCH_EARLY.png", hwnd)
+                find_and_click_cv2("OK_MATCH_END_EARLY.png", hwnd)
+                time.sleep(3)
                 print("➡️ Đã xử lý MATCH END EARLY (thua 10-0)")
                 break
 
             if find_cv2("OPPONENT_DISCONNECTED.png", hwnd):
                 find_and_click_cv2("OK_OPPONENT_DISCONNECTED.png", hwnd)
+                time.sleep(3)
                 print("➡️ Đã xử lý OPPONENT DICONNECTED (đối thủ thoát)")
                 break
             
             if find_cv2("OPPONENT_CONCEDED.png", hwnd):
                 find_and_click_cv2("OK_OPPONENT_CONCEDED.png", hwnd)
+                time.sleep(3)
                 print("➡️ Đã xử lý OPPONENT CONCEDED (đối thủ bỏ game)")
                 break
             
@@ -231,7 +234,7 @@ def auto_play_live():
                 pass
                 time.sleep(6)
 
-        print("🎁 Đã phát hiện nút! Bắt đầu xử lý tiếp...")
+        print("🎁 Bắt đầu xử lý continue...")
 
         # ===== BƯỚC 2: CONTINUE LẦN 1 =====
         while not find_and_click_cv2("CONTINUE.png", hwnd):  # Lặp lại nếu không tìm thấy CONTINUE
@@ -263,12 +266,19 @@ def auto_play_live():
         # ===== BƯỚC 5: XỬ LÝ CUỐI =====
         if find_and_click_cv2("NEW_EXIT_AD.png", hwnd):
             print("🚫 Đã tắt quảng cáo")
+            time.sleep(1)
 
+        if find_and_click_cv2("NEW_EXIT_AD.png", hwnd):
+            print("🚫 Đã tắt quảng cáo")
+            time.sleep(1)
         if find_cv2("TIER_SUMMARY.png", hwnd):
             find_and_click_cv2("OK_TIER_SUMMARY.png", hwnd)
             print("➡️ Đã xử lý TIER SUMMARY")
-            time.sleep(3)
-
+            time.sleep(2)
+        
+        if find_and_click_cv2("NEW_EXIT_AD.png", hwnd):
+            print("🚫 Đã tắt quảng cáo")
+            time.sleep(1)
         
 
         print("🔁 Vòng chơi kết thúc, bắt đầu vòng tiếp theo...\n")
