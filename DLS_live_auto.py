@@ -15,7 +15,7 @@ IMAGE_FOLDER = 'imagesDLS'  # chứa START_LIVE.png, CONTINUE.png,...
 CONFIDENCE = 0.71
 CONFIDENCE_A_BUTTON = 0.5  # confidence cho A_BUTTON
 WAIT_TIME = 1.0
-OPTION_CLICK = 2  # 1: click A_BUTTON, 2: click ĐÚP vị trí ảo, 3: không click gì
+OPTION_CLICK = 3  # 1: click A_BUTTON, 2: click ĐÚP vị trí ảo, 3: không click gì
 pyautogui.FAILSAFE = False
 
 def get_ldplayer_hwnd():
@@ -162,11 +162,19 @@ def auto_play_live():
         # ===== BƯỚC 1: START LIVE =====
         while True:
             if find_and_click_cv2("START_LIVE_2.png", hwnd):
+                if find_and_click_cv2("NEW_EXIT_AD.png", hwnd):
+                    print("🚫 Đã tắt quảng cáo")                 #check dp boot
+                    time.sleep(1)
+                    find_and_click_cv2("START_LIVE_2.png", hwnd)
                 print("➡️ Đã click START_LIVE_2.png")
                 time.sleep(2)
                 find_and_click_cv2("START_LIVE.png", hwnd)
                 break
             elif find_and_click_cv2("START_LIVE.png", hwnd):
+                if find_and_click_cv2("NEW_EXIT_AD.png", hwnd):
+                    print("🚫 Đã tắt quảng cáo")               #check dp boot
+                    time.sleep(1)
+                    find_and_click_cv2("START_LIVE_2.png", hwnd)
                 print("➡️ Đã click START_LIVE.png")
                 break
             else:
@@ -230,6 +238,7 @@ def auto_play_live():
             if (OPTION_CLICK==2):
                 click_relative(hwnd, 0.5, 0.2)  # click vào CHÍNH GIỮA
                 time.sleep(0.2)  # delay nhỏ giữa các lần click
+            
             if (OPTION_CLICK==3):
                 pass
                 time.sleep(6)
